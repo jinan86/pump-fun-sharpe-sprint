@@ -5,12 +5,14 @@
 // wallet. Capital is the harness's 10 paper SOL.
 //
 // Strategy (see strategy.ts for the full logic): the ranking is by hourly
-// Sharpe ratio, so the bot optimises for steady, low-variance returns —
-// many small, uniform-size (0.025 SOL) round trips with a +12% take-profit,
-// a -7% stop and a 250-slot timeout, entered only on fresh coins whose
-// recent tape is mostly buys with a modest rise. No pyramiding, no holding
-// to the end of the window: a single coin can never dominate the equity
-// curve, and every position has its exit decided before it is opened. The
+// Sharpe ratio, so the bot optimises for steady, low-variance returns.
+// Two sleeves share the 5 position slots: CORE (max 3, 0.06 SOL) buys early
+// on a buy-dominated tape, holds to the end of the window, cuts at -12%
+// and trails winners from +30% — a few runners pay for the many small
+// losers. FILLER (0.02 SOL) runs small capped round trips (+15% take-profit,
+// -5% stop, 180-slot timeout) that smooth the equity curve and carry the
+// run far past the 20-distinct-mint guardrail. No pyramiding: a single coin
+// can never dominate the equity curve. The
 // guardrails are met by construction: at most 5 open positions (the harness
 // cap, checked before every entry), every round trip is at least 0.025 SOL
 // (above the 0.01 SOL minimum), and the bot keeps entering fresh coins all
